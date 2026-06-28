@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Quản Lý Khách Hàng Siêu Cấp Đáng Yêu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #fdf4f5;
+            color: #4c495d;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar hệ kẹo ngọt */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 260px;
+            background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+            z-index: 100;
+            padding: 24px 16px;
+            box-shadow: 4px 0 20px rgba(124, 58, 237, 0.1);
+        }
+
+        .sidebar-brand {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.35rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 32px;
+            padding: 0 8px;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .nav-item-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.75);
+            padding: 12px 16px;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .nav-item-link:hover, .nav-item-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            transform: translateX(4px);
+        }
+
+        /* Khối nội dung chính */
+        .main-wrapper {
+            margin-left: 260px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navbar kẹo bông */
+        .top-navbar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            height: 75px;
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(244, 114, 182, 0.2);
+        }
+
+        .search-box-cute {
+            background-color: #fff1f2 !important;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .search-box-cute:focus-within {
+            border-color: #f472b6;
+            box-shadow: 0 0 0 4px rgba(244, 114, 182, 0.15);
+        }
+
+        /* Khối hiển thị nội dung Table múp míp */
+        .content-body {
+            padding: 32px;
+            flex: 1;
+        }
+
+        .dashboard-card {
+            background: #ffffff;
+            border: none;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(244, 114, 182, 0.08);
+            padding: 28px;
+        }
+
+        /* Bảng dữ liệu đáng yêu */
+        .table {
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        .table thead th {
+            background-color: #fff1f2;
+            color: #ec4899; /* Chữ màu hồng đậm */
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 14px;
+            border: none;
+        }
+
+        .table thead th:first-child {
+            border-radius: 12px 0 0 12px;
+        }
+
+        .table thead th:last-child {
+            border-radius: 0 12px 12px 0;
+        }
+
+        .table tbody tr {
+            transition: all 0.2s;
+        }
+
+        .table tbody tr:hover {
+            transform: scale(1.01);
+            box-shadow: 0 5px 15px rgba(244, 114, 182, 0.1);
+        }
+
+        .table tbody td {
+            padding: 16px 14px;
+            color: #4c495d;
+            font-weight: 500;
+            background-color: #ffffff;
+            border-top: 1px solid #fff1f2;
+            border-bottom: 1px solid #fff1f2;
+        }
+
+        .table tbody tr td:first-child {
+            border-left: 1px solid #fff1f2;
+            border-radius: 16px 0 0 16px;
+        }
+
+        .table tbody tr td:last-child {
+            border-right: 1px solid #fff1f2;
+            border-radius: 0 16px 16px 0;
+        }
+
+        /* Các nút bấm hệ "Bubbly" */
+        .btn-add {
+            background: linear-gradient(135deg, #f472b6 0%, #db2777 100%);
+            border: none;
+            color: white;
+            font-weight: 700;
+            padding: 12px 22px;
+            border-radius: 18px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 8px 20px rgba(219, 39, 119, 0.3);
+        }
+
+        .action-btn {
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            transition: all 0.2s;
+            text-decoration: none;
+            font-size: 1.05rem;
+        }
+
+        .btn-edit-custom {
+            background-color: #f3e8ff;
+            color: #a855f7;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .btn-edit-custom:hover {
+            background-color: #a855f7;
+            color: white;
+            transform: scale(1.2) rotate(-12deg);
+        }
+
+        .btn-delete-custom {
+            background-color: #ffe4e6;
+            color: #f43f5e;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .btn-delete-custom:hover {
+            background-color: #f43f5e;
+            color: white;
+            transform: scale(1.2) rotate(12deg);
+        }
+
+        .cute-badge {
+            background-color: #f472b6 !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <a href="/customers" class="sidebar-brand">
+        <i class="bi bi-balloon-heart-fill text-white"></i>
+        <span>Panda CRM ✨</span>
+    </a>
+    <ul class="nav-menu">
+        <li>
+            <a href="/customers" class="nav-item-link active">
+                <i class="bi bi-chat-heart-fill"></i>
+                <span>Khách hàng thân yêu</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" class="nav-item-link">
+                <i class="bi bi-stars"></i>
+                <span>Báo cáo lung linh</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" class="nav-item-link">
+                <i class="bi bi-nut-fill"></i>
+                <span>Cài đặt góc nhỏ</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div class="main-wrapper">
+
+    <div class="top-navbar">
+        <form th:action="@{/customers}" method="get"
+              class="d-flex align-items-center px-3 py-2 rounded-4 search-box-cute" style="width: 350px;">
+            <i class="bi bi-search text-pink" style="color: #f472b6;"></i>
+            <input type="text" name="search" th:value="${search}"
+                   class="bg-transparent border-0 w-100 ms-2"
+                   placeholder="Tìm tên khách hàng nè..."
+                   style="outline: none; font-size: 0.95rem; font-family: 'Quicksand', sans-serif;">
+
+            <button type="submit" class="btn btn-sm text-white rounded-3 px-3 cute-badge"
+                    style="font-size: 0.8rem; border: none;">
+                Tìm nha
+            </button>
+        </form>
+
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-link text-secondary position-relative p-1">
+                <i class="bi bi-bell-fill fs-5" style="color: #f472b6;"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger p-1 cute-badge"
+                      style="font-size: 0.5rem;"></span>
+            </button>
+            <div class="d-flex align-items-center gap-2 border-start ps-3"
+                 style="border-color: rgba(244, 114, 182, 0.3) !important;">
+                <div class="text-end d-none d-sm-block">
+                    <p class="m-0 small fw-bold" style="color: #4c495d;">Bé Quản Trị</p>
+                    <p class="m-0 text-muted" style="font-size: 0.75rem;">CodeGym Cute Class</p>
+                </div>
+                <div class="text-white rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                     style="width: 42px; height: 42px; background: linear-gradient(135deg, #f472b6 0%, #a855f7 100%); box-shadow: 0 4px 10px rgba(244, 114, 182, 0.3);">
+                    🌸
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="m-0" style="color: #3b2d54; font-weight: 700; letter-spacing: -0.5px;">Danh Sách Khách Hàng
+                    Thân Yêu 💖</h2>
+                <p class="text-muted small m-0 mt-1">Nơi lưu giữ thông tin của những người bạn tuyệt vời</p>
+            </div>
+            <a href="/customers/create" class="btn btn-add shadow-sm">
+                <i class="bi bi-plus-circle-fill"></i> Thêm Bạn Mới
+            </a>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="table-responsive">
+                <table class="table m-0 text-center">
+                    <thead>
+                    <tr>
+                        <th style="width: 15%;">Thứ Tự</th>
+                        <th style="width: 30%;">Họ Và Đệm</th>
+                        <th style="width: 30%;">Tên Gọi</th>
+                        <th style="width: 25%;" class="text-center">Hành Động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(customers)}">
+                        <td colspan="4" class="text-muted py-5">
+                            <i class="bi bi-emoji-frown fs-3 d-block mb-2" style="color: #f472b6;"></i>
+                            Trống trơn mất rồi, chưa có người bạn nào hết!
+                        </td>
+                    </tr>
+
+                    <tr th:each="customer, customerStat : ${customers}">
+                        <td th:text="${customerStat.index + 1}" class="text-muted fw-bold">1</td>
+                        <td th:text="${customer.firstName}" class="fw-bold" style="color: #3b2d54;">Nguyễn</td>
+                        <td th:text="${customer.lastName}" class="fw-bold" style="color: #3b2d54;">An</td>
+
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                <a th:href="@{/customers/update/__${customer.id}__}" class="action-btn btn-edit-custom"
+                                   title="Sửa thông tin nè">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                <a th:href="@{/customers/delete/__${customer.id}__}"
+                                   class="action-btn btn-delete-custom" title="Xóa bạn này">
+                                    <i class="bi bi-trash3-fill"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
